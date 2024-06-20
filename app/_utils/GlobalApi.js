@@ -13,5 +13,9 @@ const axiosClient = axios.create({
 const getLatestProducts=()=>axiosClient.get('/products?populate=*' );
 const getProductById=(id)=>axiosClient.get('/products/'+id+'?populate=*')
 const getProductByCategory=(category)=>axiosClient.get(`/products?filters[category][$eq]=${category}&populate=*`)
+const AddToCart=(data)=>axiosClient.post('/carts',data)
+const GetUserCartItem=(email)=>axiosClient.get('/carts?populate[products][populate][0]=image&filters[email][$eq]='+email)
+const deleteCartItem=(id)=>axiosClient.delete('/carts/'+id )
 
-export default {getLatestProducts, getProductById, getProductByCategory};
+
+export default {getLatestProducts, getProductById, getProductByCategory,AddToCart,GetUserCartItem,deleteCartItem};

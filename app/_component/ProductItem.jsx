@@ -40,7 +40,7 @@ function ProductItem({ product }) {
         <h2 className='text-{12px} text-gray-400 flex gap-2 items-center' >
         <List className='h-3 w-4' /> {attributes.category} </h2>
         <div >
-        <h2 className=' font-medium' >{attributes.price} DT </h2>
+        <h2 className=' font-medium' >$ {attributes.price} </h2>
         </div>
         </div> 
         </div>
