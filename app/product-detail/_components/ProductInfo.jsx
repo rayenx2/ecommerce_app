@@ -1,5 +1,5 @@
-import { CartContext } from '@/app/_context/CartContext';
-import GlobalApi from '@/app/_utils/GlobalApi';
+import { CartContext } from '../../_context/CartContext';
+import GlobalApi from '../../_utils/GlobalApi'
 import { useUser } from '@clerk/nextjs';
 
 import { BadgeCheck, OctagonX, ShoppingCart } from 'lucide-react';

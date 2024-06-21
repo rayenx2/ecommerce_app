@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react'
-import GlobalApi from '@/app/_utils/GlobalApi'
-import Breadcrumb from '@/app/_component/Breadcrumb';
+import GlobalApi from '../../_utils/GlobalApi'
+import Breadcrumb from '../../_component/Breadcrumb';
 import ProductImage from '../_components/ProductImage';
 import ProductInfo from '../_components/ProductInfo';
-import ProductList from '@/app/_component/ProductList';
+import ProductList from '../../_component/ProductList';
 import { usePathname } from 'next/navigation';
 
 function ProductDetail({params} ) {

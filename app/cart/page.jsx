@@ -3,11 +3,14 @@ import React,{useContext, useEffect, useState} from 'react'
 import {CartContext} from'../_context/CartContext';
 import GlobalApi from '../_utils/GlobalApi';
 import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+
 
 function CartPage() {
     const {cart,setCart}=useContext(CartContext)
     const [totalAmount,setTotalAmount]=useState()
     const {user}=useUser();
+    const route=useRouter();
 
      useEffect(() => {
         let total = 0;
@@ -136,12 +139,14 @@ function CartPage() {
 
 
             <div className="flex justify-end">
-              <a
-                href="/checkout"
+              <button
+
+              onClick={()=>route.push('/checkout?amount='+totalAmount ) }
+                
                 className="block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
               >
                 Checkout
-              </a>
+              </button>
             </div>
           </div>
         </div>
