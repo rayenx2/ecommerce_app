@@ -4,46 +4,66 @@ import { useUser } from '@clerk/nextjs';
 
 import { BadgeCheck, OctagonX, ShoppingCart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 function ProductInfo({ product }) {
 
   const {cart,setCart}=useContext(CartContext);
-
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const {user}=useUser();
   const router = useRouter();
-  const onAddToCartClick =()=>{
-    
+
+  useEffect(() => {
+    console.log("Initial cart state:", cart); // Initial state log
+  }, []);
+
+  useEffect(() => {
+    console.log("Updated cart state:", cart); // Updated state log
+  }, [cart]);
+
+  const onAddToCartClick = () => {
     if (!user) {
-      router.push('/sign-in')
-      return ;
+      router.push('/sign-in');
+      return;
     }
 
-    else{
-      const data = {
-        data:{
-          userName:user.fullName,
-          email:user.primaryEmailAddress.emailAddress,
-          products:[product?.id]
-        }
+    setIsAddingToCart(true);
+
+    const data = {
+      data: {
+        userName: user.fullName,
+        email: user.primaryEmailAddress.emailAddress,
+        products: [product?.id]
       }
-      GlobalApi.AddToCart(data).then(resp=>{
-        console.log("add to cart",product );
-        setCart(oldCart => [
-					...oldCart,
-					{
-            id:resp.data.data,
-            product:product
+    };
 
-          }
-				])
-			}).catch(error => {
-				console.log('error', error)
-			})
-		}
-  }
+    console.log("Data being sent to API:", data); // Debug log
 
+    GlobalApi.AddToCart(data)
+      .then(resp => {
+        console.log("API response:", resp); // Debug log
+        console.log("Adding product to cart:", product); // Debug log
+
+        setCart(oldCart => {
+          const updatedCart = [
+            ...oldCart,
+            {
+              id: resp.data.data.id,
+              product: product
+            }
+          ];
+          console.log("Updated cart state inside setCart:", updatedCart); // Debug log
+          return updatedCart;
+        });
+      })
+      .catch(error => {
+        console.error('Error adding to cart:', error.response ? error.response.data : error.message); // Debug log
+      })
+      .finally(() => {
+        setIsAddingToCart(false);
+      });
+  };
 
   // Check if product or its attributes are undefined/null
   if (!product || !product.attributes) {

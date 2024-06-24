@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {PaymentElement,useStripe,useElements} from '@stripe/react-stripe-js';
 import { useState } from 'react';
+import GlobalApi from '../../_utils/GlobalApi';
+import { useUser } from '@clerk/nextjs';
+import { CartContext } from '../../_context/CartContext';
 
 
 const CheckoutForm = ({amount} ) => {
@@ -9,7 +12,11 @@ const CheckoutForm = ({amount} ) => {
     const elements = useElements();
     const [loading, setLoading] = useState(false);
 	const [errormessage, setErrorMessage] = useState()
+  const {user}=useUser();
+  const {cart,setCart}=useContext(CartContext); 
   
+
+ 
     const handleSubmit = async (event) => {
       // We don't want to let default form submission happen here,
       // which would refresh the page.
@@ -32,6 +39,7 @@ const CheckoutForm = ({amount} ) => {
     handleError(submitError);
     return;
   }
+  createOrder();
 
       const res=await fetch('/api/create-intent',{
         method:'POST',
@@ -47,7 +55,7 @@ const CheckoutForm = ({amount} ) => {
         clientSecret:clientSecret, 
         elements,
         confirmParams: {
-          return_url: "http://localhost:3000/",
+          return_url: "http://localhost:3000/payment-confirm",
         },
       });
   
@@ -61,6 +69,32 @@ const CheckoutForm = ({amount} ) => {
       }
     };
 
+    const createOrder=()=>{
+      let productIds=[];
+      cart.forEach(element => {
+        productIds.push(element?.product?.id)
+      });
+      const data={
+        data:{
+          email:user.primaryEmailAddress.emailAddress,
+          userName:user.fullName,
+          amount:amount,
+          products:productIds
+        }
+      }
+      GlobalApi.createOrder(data).then(resp=>{
+        if (resp) {
+          console.log(resp)
+          cart.forEach(element => {
+            // GlobalApi.deleteCartItem(element?.id ).then(result=>{
+              
+            // } )
+          });
+          
+        }
+
+      } )
+    } 
 
   return (
     <form onSubmit={handleSubmit} >
